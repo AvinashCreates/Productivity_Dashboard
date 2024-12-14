@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Your Agency</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.18.1/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .widget {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .dark-mode {
+      background-color: #1a202c;
+      color: #a0aec0;
+    }
+
+    /* Custom Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 400px;
+    }
+
+    .sidebar-item:hover {
+      background-color: #4a5568;
+      cursor: pointer;
+    }
+    .dropdown:hover .dropdown-menu {
+      display: block;
+    }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      left: 100%;
+      top: 0;
+      background-color: #2d3748;
+      width: 200px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .dropdown {
+      position: relative;
+    }
+
+    .chart-container {
+      width: 50vw;
+      height: 50vh;
+      max-width: 400px;
+      max-height: 400px;
+    }
+
+    .task-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f9fafb;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .task-item.completed {
+      background-color: #c6f6d5;
+      text-decoration: line-through;
+    }
+
+    .task-item button {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+<body class="bg-gray-200 h-full">
+  <!-- Dashboard Container -->
+  <div class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-blue-600 text-white py-4 px-6 flex justify-between items-center" >
+      <img class="h-10 w-100 border-2 rounded-full flex justify-content item-left" src='C:\Users\gajul\Desktop\hackathon 4.0\user_img1.png'>
+      <h1 class="text-2xl font-bold ">YOUR AGENCY DASHBOARD</h1>
+      <button id="darkModeToggle" class="bg-gray-800 text-red px-4 py-2  rounded-full mr-1 items-center ">☼</button>
+      <button id='btn'onclick="openLoginForm()" class="bg-gray-800 text-white px-3 py-2 border-2 rounded-full flex justify-content item-right">Login</button>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex flex-1">
+      <!-- Sidebar -->
+      <nav class="bg-gray-800 text-white w-64 p-4 space-y-6 lg:block lg:w-64 lg:h-full">
+        <h2 class="text-xl font-bold">Your Agency</h2>
+        <ul class="space-y-4">
+          <!-- Dashboard with hover dropdown -->
+          <li class="flex items-center space-x-2 sidebar-item dropdown">
+            <span class="material-icons">home</span>
+          <a href="javascript:void(0)" onclick="showSection('dashboard')" class="hover:bg-gray-700 block py-2 px-4 rounded">Dashboard</a>
+            <!-- Hover dropdown for Dashboard -->
+            <ul class="dropdown-menu space-x-2">
+              <li><a href="javascript:void(0)" onclick="showSection('timeTracker')" class="block py-2 px-4 hover:bg-gray-700">Time Tracker</a></li>
+            </ul>
+          </li>
+
+        <!-- Direct links under Dashboard -->
+        <li class="flex items-center space-x-2 h-full sidebar-item dropdown">
+          <span class="material-icons">request_quote</span>
+          <a href="javascript:void(0)" onclick="showSection('requests')" class="hover:bg-gray-700 block py-2 px-4 rounded">Requests</a>
+          </br></br>
+        </li>
+        <li class="flex items-center space-x-2 sidebar-item">
+          <span class="material-icons">people</span>
+          <a href="javascript:void(0)" onclick="showSection('profiles')" class="hover:bg-gray-700 block py-2 px-4 rounded">Profiles</a></br></br>
+        </li>
+        <li class="flex items-center space-x-2 sidebar-item">
+          <span class="material-icons">message</span>
+          <a href="javascript:void(0)" onclick="showSection('messages')" class="hover:bg-gray-700 block py-2 px-4 rounded">Messages</a></br></br>
+        </li>
+        <li class="flex items-center space-x-2 sidebar-item h-full">
+          <span class="material-icons">settings</span>
+          <a href="javascript:void(0)" onclick="showSection('settings')" class="hover:bg-gray-700 block py-2 px-4 h-full rounded">Settings</a></br></br>
+        </li>
+        <li class="flex items-center space-x-2 sidebar-item">
+          <span class="material-icons"></span></br></br></br></br></br></br></br></br>
+          <a href="javascript:void(0)"  class="  py-2 px-4 "></a>
+        </li>
+      </ul>
+    </nav>
+      </nav>
+
+      <!-- Modal for Login Form -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <h2 class="text-2xl font-bold text-center mb-4">Login</h2>
+      <fieldset>
+        <input id="admin" class="peer/admin" type="radio" name="status" onclick="showProfile()" checked />
+        <label for="admin" class="peer-checked/admin:text-sky-500"> ADMIN</label>
+        <input id="user" class="peer/user" type="radio" name="status" onclick="showProfile()" checked/>
+        <label for="user" class="peer-checked/user:text-sky-500">USER</label>
+        <div class="hidden peer-checked/admin:block">data are only visible to administrators.</div>
+        <div class="hidden peer-checked/user:block">Your post will be publicly visible on your site.</div>
+      </fieldset>
+      <form id="login" action="#" method="POST">
+        <div class="mb-4">
+          <label for="loginEmail" class="block text-sm font-semibold">Email</label>
+          <input type="email" id="email" name="email" class="border p-2 w-full rounded" placeholder="Enter your email" required>
+        </div>
+        <div class="mb-4">
+          <label for="loginPassword" class="block text-sm font-semibold">Password</label>
+          <input type="password" id="loginPassword" name="password" class="border p-2 w-full rounded" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" onclick="display()"class="bg-green-600 text-white px-4 py-2 rounded w-full">Login</button>
+      </form>
+      <p class="mt-4 text-center">
+        Don't have an account? 
+        <a href="javascript:void(0)" onclick="showRegisterForm()" class="text-blue-600 hover:text-blue-800">Register</a>
+      </p>
+      <button onclick="closeLoginForm()" class="bg-red-600 text-white px-4 py-2 rounded mt-4 w-full">Close</button>
+    </div>
+  </div>
+
+  <!-- Modal for Register Form -->
+  <div id="registerModal" class="modal">
+    <div class="modal-content">
+      <h2 class="text-2xl font-bold text-center mb-4">Register</h2>
+      <form id="register" action="#" method="POST">
+        <fieldset>
+          <input id="admin" class="peer/admin" type="radio" name="status"  onclick="showProfile()" checked />
+          <label for="admin" class="peer-checked/admin:text-sky-500"> ADMIN</label>
+          <input id="user" class="peer/user" type="radio" name="status" onclick="showProfile()" checked/>
+          <label for="user" class="peer-checked/user:text-sky-500">USER</label>
+          <div class="hidden peer-checked/admin:block">data are only visible to administrators.</div>
+          <div class="hidden peer-checked/user:block">Your post will be publicly visible on your site.</div>
+        </fieldset>
+        <div class="mb-4">
+          <label for="registerName" class="block text-sm font-semibold">Full Name</label>
+          <input type="text" id="registerName" name="name" class="border p-2 w-full rounded" placeholder="Enter your full name" required>
+        </div>
+        <div class="mb-4">
+          <label for="registerEmail" class="block text-sm font-semibold">Email</label>
+          <input type="email" id="email" name="email" class="border p-2 w-full rounded" placeholder="Enter your email" required>
+        </div>
+        <div class="mb-4">
+          <label for="registerPassword" class="block text-sm font-semibold">Password</label>
+          <input type="password" id="registerPassword" name="password" class="border p-2 w-full rounded" placeholder="Create a password" required>
+        </div>
+        <div class="mb-4">
+          <label for="registerConfirmPassword" class="block text-sm font-semibold">Confirm Password</label>
+          <input type="password" id="registerConfirmPassword" name="confirmPassword" class="border p-2 w-full rounded" placeholder="Confirm your password" required>
+        </div>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded w-full">Register</button>
+      </form>
+      <p class="mt-4 text-center">
+        Already have an account? 
+        <a href="javascript:void(0)" onclick="showLoginForm()" class="text-green-600 hover:text-blue-800">Login</a>
+      </p>
+      <button onclick="closeRegisterForm()" class="bg-red-600 text-white px-4 py-2 rounded mt-4 w-full">Close</button>
+    </div>
+  </div>
+
+  <!-- Content Area -->
+  <div class="flex-1 p-6 space-y-6">
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="widget bg-white p-4 rounded-lg">
+      <h2 class="text-xl font-bold mb-4">Tasks</h2>
+      <div>
+        <input type="text" id="taskInput" class="border p-2 w-full mb-2" placeholder="Add a new task" required>
+        <input datepicker id="taskCompletionDate" type="date" class="bg-blue-50 border-3 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-50 ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 " placeholder="Select date">
+        <select id="taskCategory" class="border p-2 w-full mb-2">
+          <option value="Work">Work</option>
+          <option value="Personal">Personal</option>
+          <option value="Others">Others</option>
+        </select>
+        <select id="taskPriority" class="border p-2 w-full mb-4">
+          <option value="High">High Priority</option>
+          <option value="Medium">Medium Priority</option>
+          <option value="Low">Low Priority</option>
+        </select>
+        <button type="submit" onclick="addTask()" class="bg-blue-600 text-white px-4 py-2 rounded">Add Task</button>
+      </div>
+      <ul id="taskList" class="mt-4 space-y-2">
+        <!-- Tasks will be added here dynamically -->
+      </ul>
+    </section>
+
+    <!-- Requests Section -->
+    <section id="requests" class="widget bg-white p-4 rounded-lg hidden">
+      <h2 class="text-xl font-bold mb-4" onclick="addTask()">Requests</h2>
+      <ul id="requestList">
+        <!-- Requests will appear here -->
+      </ul>
+    </section>
+
+    <!-- Messages Section -->
+    <section id="messages" class="widget bg-white p-4 rounded-lg hidden">
+      <h2 class="text-xl font-bold mb-4" onclick="completeTask()">messages</h2>
+      <ul id="messagesList">
+        <!-- Requests will appear here -->
+      </ul>
+    </section>
+
+    <!-- profiles Section -->
+    <section id="profiles" class="widget bg-white p-8 rounded-lg hidden">
+      <h2 class="text-xl font-bold mb-4" onclick="showProfile()">Profiles</h2>
+      <ul id="profilesList">
+        <!-- profiles will appear here -->
+      </ul>
+    </section>
+
+    <!-- Time Tracker Section -->
+    <section id="timeTracker" class="widget bg-white p-4 rounded-lg hidden">
+      <h2 class="text-xl font-bold mb-4">Time Tracker</h2>
+      <input type="time" id="taskTimeLimit" class="border p-2 w-50 mb-4" placeholder="Set time limit (in hours)"></br>
+      <button onclick="startPomodoro()" class="bg-green-600 text-white px-4 py-2 rounded">Start Pomodoro</button>
+    </section>
+
+    <!-- Analytics Section -->
+    <section id="dashboard" class="widget bg-white p-4 rounded-lg hidden">
+      <h2 class="text-xl font-bold mb-4">Analytics</h2>
+      <div class="chart-container">
+        <canvas id="pieChart" width="50%" height="50%"></canvas>
+      </div>
+    </section>
+  </div>
+</div>
+</div>
+
+      <!-- Other Sections -->
+        <section id="requests" class="widget bg-white p-4 rounded-lg hidden">
+          <h2 class="text-xl font-bold mb-4">Requests</h2>
+          <p>Manage your requests here...</p>
+        </section>
+        <section id="users" class="widget bg-white p-4 rounded-lg hidden">
+          <h2 class="text-xl font-bold mb-4">Users</h2>
+          <p>Manage your users here...</p>
+        </section>
+        <section id="services" class="widget bg-white p-4 rounded-lg hidden">
+          <h2 class="text-xl font-bold mb-4">Services</h2>
+          <p>Manage your services here...</p>
+        </section>
+        <section id="messages" class="widget bg-white p-4 rounded-lg hidden">
+          <h2 class="text-xl font-bold mb-4">Messages</h2>
+          <p>Manage your messages here...</p>
+        </section>
+        <section id="settings" class="widget bg-white p-4 rounded-lg hidden">
+          <h2 class="text-xl font-bold mb-4">Settings</h2>
+          <p>Manage your settings here...</p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Toggle dark mode
+    document.getElementById('darkModeToggle').addEventListener('click', function() {
+      document.body.classList.toggle('dark-mode');
+    });
+
+    // Show selected section
+    function showSection(sectionId) {
+      const sections = document.querySelectorAll('section');
+      sections.forEach(section => {
+        if (section.id === sectionId) {
+          section.classList.remove('hidden');
+        } else {
+          section.classList.add('hidden');
+        }
+      });
+    }
+
+    // Initially show the dashboard section
+    showSection('dashboard');
+
+    // Modal Logic
+    function openLoginForm() {
+      document.getElementById('loginModal').style.display = 'flex';
+    }
+
+    function closeLoginForm() {
+      document.getElementById('loginModal').style.display = 'none';
+    }
+
+    function openRegisterForm() {
+      document.getElementById('registerModal').style.display = 'flex';
+    }
+
+    function closeRegisterForm() {
+      document.getElementById('registerModal').style.display = 'none';
+    }
+
+    function showRegisterForm() {
+      closeLoginForm();
+      openRegisterForm();
+    }
+
+    function showLoginForm() {
+      closeRegisterForm();
+      openLoginForm();
+    }
+
+  // Pie Chart Code
+  let completed = 0;
+    let incomplete = 0;
+    let ongoing = 0;
+    let ctx = document.getElementById('pieChart').getContext('2d');
+
+    let pieChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Completed', 'Incomplete', 'Ongoing'],
+        datasets: [{
+          data: [completed, incomplete, ongoing],
+          backgroundColor: ['#4BC0C0', '#FF6384', '#36A2EB'],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Task Progress Overview'
+          }
+        }
+      }
+    });
+
+    // Function to update pie chart after task update
+    function updateChart() {
+      pieChart.data.datasets[0].data = [completed, incomplete, ongoing];
+      pieChart.update();
+    }
+    
+    // Task management functions
+    const taskInput1 = document.getElementById('taskInput').value;
+     
+    function addTask() {
+      const taskInput = document.getElementById('taskInput').value;
+     const taskCompletionDate = document.getElementById('taskCompletionDate').value;
+    const taskCategory = document.getElementById('taskCategory').value;
+    const taskPriority = document.getElementById('taskPriority').value;
+      if (taskInput.trim() !== "" && taskCompletionDate) {
+        // Add task to requests section
+        const requestList = document.getElementById('requestList');
+        const requestItem = document.createElement('li');
+        requestItem.innerHTML = `${taskInput} request has been recorded. 
+          <button onclick="markCompleted(this)"></button>
+          <button onclick="markPaused(this)"></button>`;
+        requestList.appendChild(requestItem);
+        const taskList = document.getElementById('taskList');
+        const taskItem = document.createElement('li');
+        taskItem.innerHTML = `
+          <strong>${taskInput}</strong> 
+           &nbsp;&nbsp; category: ${taskCategory} 
+          &nbsp;&nbsp; Priority: ${taskPriority} 
+          &nbsp;&nbsp;Due: ${taskCompletionDate}  &nbsp;&nbsp; &nbsp;&nbsp; 
+          <button onclick="completeTask(this)">✔</button> &nbsp;&nbsp; &nbsp;&nbsp;
+          <button onclick="markAsOngoing(this)">🗓</button>
+        `;
+        taskList.appendChild(taskItem);
+        document.getElementById('taskInput').value = "";
+        document.getElementById('taskCompletionDate').value = "";
+        // Clear the task input fields
+        
+        document.getElementById('taskInput').value = "";
+        document.getElementById('taskCompletionDate').value = "";
+
+        document.getElementById('taskInput').value = "";
+        document.getElementById('taskCompletionDate').value = "";
+          }
+      ++incomplete;
+         let updatedData =[completed,incomplete,ongoing];
+        //Update the chart object
+        pieChart.data.datasets[0].data = updatedData;
+                //Update the chart
+        pieChart.update();
+            return completed;
+            return incomplete;
+            return ongoing;
+    }
+
+    // Task completion and tracking
+    function completeTask(button) {
+        if((ongoing>=1)|(incomplete>=1)){
+            if(ongoing>=1){
+            --ongoing;
+            }
+            if(incomplete>=1){
+            --incomplete;
+            }
+
+            ++completed;
+            let updatedData =[completed,incomplete,ongoing];
+            //Update the chart object
+            pieChart.data.datasets[0].data = updatedData;
+            //Update the chart
+            pieChart.update();
+            const taskInput = document.getElementById('taskInput').value;
+            const messagesList = document.getElementById('messagesList');
+            const messagesItem = document.createElement('li');
+            messagesItem.innerHTML = `${taskInput1} request has completed .`;
+            messagesList.appendChild(messagesItem);
+        }
+      button.parentElement.style.textDecoration = "line-through";
+    }
+
+    function markAsOngoing(button) {
+        if(incomplete>=1){
+            --incomplete;
+            ++ongoing;
+            let updatedData =[completed,incomplete,ongoing];
+            //Update the chart object
+            pieChart.data.datasets[0].data = updatedData;
+            //Update the chart
+            pieChart.update();
+            const taskInput = document.getElementById('taskInput').value;
+            const messagesList = document.getElementById('messagesList');
+            const messagesItem = document.createElement('li');
+            messagesItem.innerHTML = `${taskInput1} request was in progress .`;
+            messagesList.appendChild(messagesItem);
+            }
+    }
+    // Pomodoro Timer for Time Tracker
+    let pomodoroTimer;
+    function startPomodoro() {
+      alert("Pomodoro started! Focus on your task for 1 minute.");
+      pomodoroTimer = setTimeout(() => {
+        alert("Pomodoro complete! Take a minute break.");
+      }, 5 * 60 * 1000); // 25 minutes
+    }
+   
+    function showProfile(type) {
+      const profilesLists=document.getElementById('profilesLists');
+      const profileDetails = document.getElementById('li');
+      if(admin==1){
+        profilesLists.innerHTML = `${email} is admin.`;
+      }else(user==1)
+      {
+        profilesLists.innerHTML = `${email} is a user.`;
+      }
+      
+    }
+  </script>
+</body>
+</html>
